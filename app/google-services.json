@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "564792005654",
+    "firebase_url": "https://librarymanagementsystem-1609c.firebaseio.com",
+    "project_id": "librarymanagementsystem-1609c",
+    "storage_bucket": "librarymanagementsystem-1609c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564792005654:android:61276e84511fff40",
+        "android_client_info": {
+          "package_name": "mobile.li.librarymanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564792005654-kn0djk9o36oiij14vnp8k0keciu8tsj8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByjM4zJiK1gCUFTf_M3YzTWHJoVuYlJiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
