@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private DatabaseReference mDatabase;
-    private String mUserId;
+    private String mLibrarianId;
+    private String mLibrarianEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
             // Not logged in, launch the Log In activity
             loadLogInView();
         } else {
-            mUserId = mFirebaseUser.getUid();
+            mLibrarianId = mFirebaseUser.getUid();
+            mLibrarianEmail = mFirebaseUser.getEmail();
 
             // Set up ListView
             final ListView listView = (ListView) findViewById(R.id.listView);
@@ -57,17 +59,47 @@ public class MainActivity extends AppCompatActivity {
             final Button button = (Button) findViewById(R.id.addButton);
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Item item = new Item(text.getText().toString());
-                    mDatabase.child("users").child(mUserId).child("items").push().setValue(item);
+                    //Item item = new Item(text.getText().toString());
+                    Book book = new Book(text.getText().toString());
+                    book.setBookCreatedBy(mLibrarianId);
+                    book.setBookCreateByEmail(mLibrarianEmail);
+                    //mDatabase.child("users").child(mUserId).child("items").push().setValue(book);
+                    mDatabase.child("books").push().setValue(book);
                     text.setText("");
                 }
             });
 
             // Use Firebase to populate the list.
-            mDatabase.child("users").child(mUserId).child("items").addChildEventListener(new ChildEventListener() {
+//            mDatabase.child("users").child(mUserId).child("items").addChildEventListener(new ChildEventListener() {
+//                @Override
+//                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                    adapter.add((String) dataSnapshot.child("title").getValue());
+//                }
+//
+//                @Override
+//                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//                }
+//
+//                @Override
+//                public void onChildRemoved(DataSnapshot dataSnapshot) {
+//                    adapter.remove((String) dataSnapshot.child("title").getValue());
+//                }
+//
+//                @Override
+//                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+            mDatabase.child("books").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    adapter.add((String) dataSnapshot.child("title").getValue());
+                    adapter.add((String) dataSnapshot.child("bookName").getValue());
                 }
 
                 @Override
@@ -77,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    adapter.remove((String) dataSnapshot.child("title").getValue());
+                    adapter.remove((String) dataSnapshot.child("bookName").getValue());
                 }
 
                 @Override
@@ -94,8 +126,25 @@ public class MainActivity extends AppCompatActivity {
             // Delete items when clicked
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mDatabase.child("users").child(mUserId).child("items")
-                            .orderByChild("title")
+//                    mDatabase.child("users").child(mUserId).child("items")
+//                            .orderByChild("bookName")
+//                            .equalTo((String) listView.getItemAtPosition(position))
+//                            .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    if (dataSnapshot.hasChildren()) {
+//                                        DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
+//                                        firstChild.getRef().removeValue();
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+                    mDatabase.child("books")
+                            .orderByChild("bookName")
                             .equalTo((String) listView.getItemAtPosition(position))
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
