@@ -39,11 +39,13 @@ public class MainActivity extends AppCompatActivity {
                 customerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 customerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(customerIntent);
+                finish();
             }else{
                 Intent libIntent = new Intent(this, LibrarianMainActivity.class);
                 libIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 libIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(libIntent);
+                finish();
             }
         }
     }
