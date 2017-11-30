@@ -7,6 +7,7 @@ package mobile.li.librarymanagement;
 public class Book {
     private String bookName;
     private String bookAuthor;
+    private String bookTitle;
     private String bookCallNumber;
     private String bookPublisher;
     private String bookYear;
@@ -23,13 +24,13 @@ public class Book {
         bookName = input_bookName;
     }
 
-    public void setBookName(String Name){
-        bookName = Name;
-    }
+    public void setBookName(String Name){ bookName = Name;}
 
     public void setBookAuthor(String Author){
         bookAuthor = Author;
     }
+
+    public void setBookTitle(String Title) { bookTitle = Title;}
 
     public void setBookCallNumber(String callNumber){
         bookCallNumber = callNumber;
@@ -90,6 +91,8 @@ public class Book {
     public String getBookYear(){
         return bookYear;
     }
+
+    public String getBookTitle() {return bookTitle;}
 
     public String getBookLocation(){
         return bookLocation;

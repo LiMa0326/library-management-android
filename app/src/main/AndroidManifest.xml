@@ -23,7 +23,9 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".CustomerMainActivity" />
         <activity android:name=".LibrarianMainActivity" />
-        <activity android:name=".CustomerBookList"></activity>
+        <activity android:name=".CustomerBookList" />
+        <activity android:name=".BookAdderActivity" />
+        <activity android:name=".BookEditorActivity"></activity>
     </application>
 
 </manifest>

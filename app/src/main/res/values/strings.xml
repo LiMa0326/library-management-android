@@ -11,7 +11,8 @@
     <string name="login_button_label">Login</string>
     <string name="sign_up_text">Sign Up!</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="add_item">Add New Item</string>
+    <string name="add_book">Add New Book</string>
+    <string name="search_book">Search Book</string>
     <string name="action_logout">Logout</string>
     <string name="action_rentNewBook">Rent Book</string>
 
