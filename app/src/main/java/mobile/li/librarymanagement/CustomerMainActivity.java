@@ -44,6 +44,7 @@ public class CustomerMainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        Log.i("CustomerMainActivity:" , "Set Firebase Successful");
 
         if (mFirebaseUser == null){
             // Not logged in, launch the Log In activity
@@ -77,17 +78,17 @@ public class CustomerMainActivity extends AppCompatActivity {
 
                     if(temp != null && temp.getEmail().equals(mLibrarianEmail)){
                         if(temp.getRentBooks() != null){
-                            for(String bookName: temp.getRentBooks().keySet()){
+                            for(String bookName: temp.getRentBooks().values()){
                                 adapter.add(bookName);
                             }
                         }
                     }else{
                         Customer newCustomer = new Customer(mLibrarianId, mLibrarianEmail);
-                        Map<String, Long> newMap = new HashMap<>();
-                        newMap.put("感时花溅泪第一卷", System.currentTimeMillis());
-                        newMap.put("感时花溅泪第二卷", System.currentTimeMillis());
+                        Map<String, String> newMap = new HashMap<>();
+                        newMap.put(String.valueOf(System.currentTimeMillis()),"恨别鸟惊心第一卷");
                         newCustomer.setRentBooks(newMap);
                         mDatabase.child("customer").push().setValue(newCustomer);
+                        Log.e("CustomerMainActivity:" , "Add new customer: " + mLibrarianEmail);
                     }
                 }
 
