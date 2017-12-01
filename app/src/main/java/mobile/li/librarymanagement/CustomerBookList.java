@@ -107,6 +107,7 @@ public class CustomerBookList extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Rent Book Limit exceed!", Toast.LENGTH_LONG).show();
                                 }
                             }
+                            finish();
                         }
 
                         @Override
@@ -127,7 +128,7 @@ public class CustomerBookList extends AppCompatActivity {
     }
 
     private void loadCustomerMain() {
-        Intent intent = new Intent(this, CustomerMainActivity.class);
+        Intent intent = new Intent(CustomerBookList.this, CustomerMainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

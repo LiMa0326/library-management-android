@@ -108,7 +108,7 @@ public class CustomerMainActivity extends AppCompatActivity {
     }
 
     private void loadCustomerBookList(){
-        Intent intent = new Intent(this, CustomerBookList.class);
+        Intent intent = new Intent(CustomerMainActivity.this, CustomerBookList.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

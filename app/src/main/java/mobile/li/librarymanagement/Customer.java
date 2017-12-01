@@ -35,7 +35,7 @@ public class Customer {
             int temp_rentCountOneDay = 0;
             for(String millTimeStr : rentBooks.keySet()){
                 Long millTime = Long.valueOf(millTimeStr);
-                Date date = new Date(millTime * 1000L);
+                Date date = new Date(millTime);
                 if(date.getDay() == currentDateTime.getDay()){
                     temp_rentCountOneDay++;
                 }
@@ -48,7 +48,7 @@ public class Customer {
         rentCountOneDay = updateRentCountOneDay();
         Log.e("Customer-OneDay:" , String.valueOf(rentCountOneDay));
         Log.e("Customer-ALL:" , String.valueOf(rentBooks.size()));
-        if(rentBooks.size() <= 9 && rentCountOneDay <= 3){
+        if(rentBooks.size() < 9 && rentCountOneDay < 3){
             rentBooks.put(String.valueOf(System.currentTimeMillis()), newBook);
             rentCountOneDay = updateRentCountOneDay();
             return true;
