@@ -74,17 +74,17 @@ public class BookAdderActivity extends AppCompatActivity {
 
     private void saveBook() {
 
-        name = ((EditText) findViewById(R.id.book_adder_name)).getText().toString();
-        author = ((EditText) findViewById(R.id.book_adder_author)).getText().toString();
-        title = ((EditText) findViewById(R.id.book_adder_title)).getText().toString();
-        call_number = ((EditText) findViewById(R.id.book_adder_number)).getText().toString();
-        publisher = ((EditText) findViewById(R.id.book_adder_publisher)).getText().toString();
-        year = ((EditText) findViewById(R.id.book_adder_year)).getText().toString();
-        location = ((EditText) findViewById(R.id.book_adder_location)).getText().toString();
-        copies = ((EditText) findViewById(R.id.book_adder_copies)).getText().toString();
-        status = ((EditText) findViewById(R.id.book_adder_status)).getText().toString();
-        keywords = ((EditText) findViewById(R.id.book_adder_keyword)).getText().toString();
-        image_path = ((EditText) findViewById(R.id.book_adder_imagePath)).getText().toString();
+        name = ((EditText) findViewById(R.id.book_adder_name)).getText().toString().toUpperCase();
+        author = ((EditText) findViewById(R.id.book_adder_author)).getText().toString().toUpperCase();
+        title = ((EditText) findViewById(R.id.book_adder_title)).getText().toString().toUpperCase();
+        call_number = ((EditText) findViewById(R.id.book_adder_number)).getText().toString().toUpperCase();
+        publisher = ((EditText) findViewById(R.id.book_adder_publisher)).getText().toString().toUpperCase();
+        year = ((EditText) findViewById(R.id.book_adder_year)).getText().toString().toUpperCase();
+        location = ((EditText) findViewById(R.id.book_adder_location)).getText().toString().toUpperCase();
+        copies = ((EditText) findViewById(R.id.book_adder_copies)).getText().toString().toUpperCase();
+        status = ((EditText) findViewById(R.id.book_adder_status)).getText().toString().toUpperCase();
+        keywords = ((EditText) findViewById(R.id.book_adder_keyword)).getText().toString().toUpperCase();
+        image_path = ((EditText) findViewById(R.id.book_adder_imagePath)).getText().toString().toUpperCase();
 
         if(name == null || name.trim().equals("")){
             name = " ";

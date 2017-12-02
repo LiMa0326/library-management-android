@@ -107,7 +107,7 @@ public class LibrarianMainActivity extends AppCompatActivity {
         final Button searchButton = (Button) findViewById(R.id.searchButton);
         searchButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                final String name = ((EditText)findViewById(R.id.searchText)).getText().toString();
+                final String name = ((EditText)findViewById(R.id.searchText)).getText().toString().toUpperCase();
                 mDatabase.child("books")
                         .orderByChild("bookName")
                         .equalTo(name)
