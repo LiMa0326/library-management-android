@@ -9,8 +9,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import static mobile.li.librarymanagement.LibrarianMainActivity.KEY_NAME;
 
 public class BookAdderActivity extends AppCompatActivity {
 
@@ -52,21 +57,39 @@ public class BookAdderActivity extends AppCompatActivity {
                         location == " " || copies == " " || status == " " || keywords == " " || image_path == " "){
                     Toast.makeText(BookAdderActivity.this, "Please fill all the blank", Toast.LENGTH_LONG).show();
                 }else {
-                    Book book = new Book(name);
-                    book.setBookCreatedBy(mLibrarianId);
-                    book.setBookCreateByEmail(mLibrarianEmail);
-                    book.setBookAuthor(author);
-                    book.setBookTitle(title);
-                    book.setBookCallNumber(call_number);
-                    book.setBookPublisher(publisher);
-                    book.setBookYear(year);
-                    book.setBookLocation(location);
-                    book.setBookCopies(Integer.parseInt(copies));
-                    book.setBookStatus(status);
-                    book.setBookKeywords(keywords);
-                    book.setBookImagePath(image_path);
-                    mDatabase.child("books").push().setValue(book);
-                    finish();
+                    mDatabase.child("books")
+                            .orderByChild("bookName")
+                            .equalTo(name)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.hasChildren()){
+                                        Toast.makeText(BookAdderActivity.this, "Book with same name had been added", Toast.LENGTH_LONG).show();
+                                    }else{
+                                        Book book = new Book(name);
+                                        book.setBookCreatedBy(mLibrarianId);
+                                        book.setBookCreateByEmail(mLibrarianEmail);
+                                        book.setBookAuthor(author);
+                                        book.setBookTitle(title);
+                                        book.setBookCallNumber(call_number);
+                                        book.setBookPublisher(publisher);
+                                        book.setBookYear(year);
+                                        book.setBookLocation(location);
+                                        book.setBookCopies(Integer.parseInt(copies));
+                                        book.setBookStatus(status);
+                                        book.setBookKeywords(keywords);
+                                        book.setBookImagePath(image_path);
+                                        mDatabase.child("books").push().setValue(book);
+                                        finish();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                 }
             }
         });

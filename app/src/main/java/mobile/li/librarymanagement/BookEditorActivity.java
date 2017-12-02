@@ -81,26 +81,27 @@ public class BookEditorActivity extends AppCompatActivity {
                 if(name == " " || author == " " || title == " " || call_number == " " || publisher == " " || year == " " ||
                         location == " " || copies == " " || status == " " || keywords == " " || image_path == " "){
                     Toast.makeText(BookEditorActivity.this, "Please fill all the blank", Toast.LENGTH_LONG).show();
-                }else {
+                }else if(name.equals(getIntent().getStringExtra(KEY_NAME))){
+                    editBook();
+                    Intent resultIntent = new Intent();
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                }
+                else {
                     mDatabase.child("books")
                             .orderByChild("bookName")
-                            .equalTo(getIntent().getStringExtra(KEY_NAME))
+                            .equalTo(name)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if(dataSnapshot.hasChildren()){
-                                        DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
-                                        firstChild.child("bookName").getRef().setValue(name);
-                                        firstChild.child("bookAuthor").getRef().setValue(author);
-                                        firstChild.child("bookTitle").getRef().setValue(title);
-                                        firstChild.child("bookCallNumber").getRef().setValue(call_number);
-                                        firstChild.child("bookPublisher").getRef().setValue(publisher);
-                                        firstChild.child("bookLocation").getRef().setValue(location);
-                                        firstChild.child("bookCopies").getRef().setValue(Long.parseLong(copies));
-                                        firstChild.child("bookStatus").getRef().setValue(status);
-                                        firstChild.child("bookKeywords").getRef().setValue(keywords);
-                                        firstChild.child("bookImagePath").getRef().setValue(image_path);
-                                        firstChild.child("bookYear").getRef().setValue(year);
+                                        Toast.makeText(BookEditorActivity.this, "Book with same name has been added", Toast.LENGTH_LONG).show();
+
+                                    }else{
+                                        editBook();
+                                        Intent resultIntent = new Intent();
+                                        setResult(RESULT_OK, resultIntent);
+                                        finish();
                                     }
                                 }
 
@@ -109,9 +110,6 @@ public class BookEditorActivity extends AppCompatActivity {
 
                                 }
                             });
-                    Intent resultIntent = new Intent();
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
                 }
             }
         });
@@ -230,6 +228,36 @@ public class BookEditorActivity extends AppCompatActivity {
         if(image_path == null || image_path.trim().equals("")){
             image_path = " ";
         }
+    }
+
+    private void editBook(){
+        mDatabase.child("books")
+                .orderByChild("bookName")
+                .equalTo(getIntent().getStringExtra(KEY_NAME))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChildren()){
+                            DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
+                            firstChild.child("bookName").getRef().setValue(name);
+                            firstChild.child("bookAuthor").getRef().setValue(author);
+                            firstChild.child("bookTitle").getRef().setValue(title);
+                            firstChild.child("bookCallNumber").getRef().setValue(call_number);
+                            firstChild.child("bookPublisher").getRef().setValue(publisher);
+                            firstChild.child("bookLocation").getRef().setValue(location);
+                            firstChild.child("bookCopies").getRef().setValue(Long.parseLong(copies));
+                            firstChild.child("bookStatus").getRef().setValue(status);
+                            firstChild.child("bookKeywords").getRef().setValue(keywords);
+                            firstChild.child("bookImagePath").getRef().setValue(image_path);
+                            firstChild.child("bookYear").getRef().setValue(year);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 }
 
