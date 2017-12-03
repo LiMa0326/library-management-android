@@ -32,9 +32,8 @@ public class LibrarianMainActivity extends AppCompatActivity {
     private String mLibrarianId;
     private String mLibrarianEmail;
 
-    private static final int REQ_CODE_BOOK_EDITOR = 100;
-
     public static final String KEY_NAME = "key_name";
+    public static final String SEARCH_CODE_FOR_LIBRARIAN = "search_code_for_librarian_is_sjsu.edu";
     String temp = "lalala";
 
 
@@ -51,7 +50,6 @@ public class LibrarianMainActivity extends AppCompatActivity {
             loadLogInView();
         } else {
             mLibrarianId = mFirebaseUser.getUid();
-            mLibrarianEmail = mFirebaseUser.getEmail();
 
             // Set up ListView
             setupUI();
@@ -90,6 +88,7 @@ public class LibrarianMainActivity extends AppCompatActivity {
     }
 
     public void setupUI(){
+        mLibrarianEmail = mFirebaseUser.getEmail();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         final ListView listView = (ListView) findViewById(R.id.listView);
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
@@ -116,14 +115,44 @@ public class LibrarianMainActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if(dataSnapshot.hasChildren()) {
                                     Intent intent = new Intent (LibrarianMainActivity.this, BookEditorActivity.class);
-
                                     intent.putExtra(KEY_NAME, name);
                                     ((EditText)findViewById(R.id.searchText)).setText("");
-                                    startActivityForResult(intent, REQ_CODE_BOOK_EDITOR);
+                                    startActivity(intent);
                                 }else{
-                                    Toast.makeText(LibrarianMainActivity.this, "No such book in the library", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent (LibrarianMainActivity.this, LibrarianSearchList.class);
+                                    intent.putExtra(KEY_NAME, name);
                                     ((EditText)findViewById(R.id.searchText)).setText("");
+                                    startActivity(intent);
 
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+            }
+        });
+
+        final Button searchMyButton = (Button) findViewById(R.id.searchMyButton);
+        searchMyButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                mDatabase.child("books")
+                        .orderByChild("bookCreateByEmail")
+                        .equalTo(mLibrarianEmail)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.hasChildren()) {
+                                    Intent intent = new Intent (LibrarianMainActivity.this, LibrarianSearchList.class);
+                                    intent.putExtra(KEY_NAME, SEARCH_CODE_FOR_LIBRARIAN);
+                                    ((EditText)findViewById(R.id.searchText)).setText("");
+                                    startActivity(intent);
+                                }else{
+                                    Toast.makeText(LibrarianMainActivity.this, "This librarian hasn't added or updated any book",
+                                            Toast.LENGTH_LONG).show();
                                 }
                             }
 
@@ -165,6 +194,7 @@ public class LibrarianMainActivity extends AppCompatActivity {
 //
 //                }
 //            });
+
         mDatabase.child("books").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -215,17 +245,18 @@ public class LibrarianMainActivity extends AppCompatActivity {
                 temp = (String) listView.getItemAtPosition(position);
 
                 intent.putExtra(KEY_NAME, temp);
-                startActivityForResult(intent, REQ_CODE_BOOK_EDITOR);
+//                startActivityForResult(intent, REQ_CODE_BOOK_EDITOR);
+                startActivity(intent);
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode == REQ_CODE_BOOK_EDITOR){
-            if(resultCode == RESULT_OK){
-                setupUI();
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+//        if(requestCode == REQ_CODE_BOOK_EDITOR){
+//            if(resultCode == RESULT_OK){
+//                setupUI();
+//            }
+//        }
+//    }
 }

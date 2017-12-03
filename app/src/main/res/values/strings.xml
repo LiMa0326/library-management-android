@@ -13,6 +13,7 @@
     <string name="title_activity_login">Sign in</string>
     <string name="add_book">Add New Book</string>
     <string name="search_book">Search Book</string>
+    <string name="search_my_book">Search My Book</string>
     <string name="action_logout">Logout</string>
     <string name="action_rentNewBook">Rent Book</string>
     <string name="back_customer_main">Rent List</string>>

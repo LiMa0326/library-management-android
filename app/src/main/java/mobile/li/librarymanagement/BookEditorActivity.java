@@ -83,9 +83,13 @@ public class BookEditorActivity extends AppCompatActivity {
                     Toast.makeText(BookEditorActivity.this, "Please fill all the blank", Toast.LENGTH_LONG).show();
                 }else if(name.equals(getIntent().getStringExtra(KEY_NAME))){
                     editBook();
-                    Intent resultIntent = new Intent();
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
+//                    Intent resultIntent = new Intent();
+//                    setResult(RESULT_OK, resultIntent);
+//                    finish();
+                    Intent intent = new Intent(BookEditorActivity.this, LibrarianMainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                 }
                 else {
                     mDatabase.child("books")
@@ -99,9 +103,13 @@ public class BookEditorActivity extends AppCompatActivity {
 
                                     }else{
                                         editBook();
-                                        Intent resultIntent = new Intent();
-                                        setResult(RESULT_OK, resultIntent);
-                                        finish();
+//                                        Intent resultIntent = new Intent();
+//                                        setResult(RESULT_OK, resultIntent);
+//                                        finish();
+                                        Intent intent = new Intent(BookEditorActivity.this, LibrarianMainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
                                     }
                                 }
 
@@ -134,9 +142,13 @@ public class BookEditorActivity extends AppCompatActivity {
 
                             }
                         });
-                Intent resultIntent = new Intent();
-                setResult(RESULT_OK, resultIntent);
-                finish();
+//                Intent resultIntent = new Intent();
+//                setResult(RESULT_OK, resultIntent);
+//                finish();
+                Intent intent = new Intent(BookEditorActivity.this, LibrarianMainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         });
 
