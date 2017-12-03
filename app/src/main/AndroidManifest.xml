@@ -27,6 +27,7 @@
         <activity android:name=".BookAdderActivity" />
         <activity android:name=".BookEditorActivity" />
         <activity android:name=".LibrarianSearchList"></activity>
+        <activity android:name=".CustomerReturnBookActivity"></activity>
     </application>
 
 </manifest>

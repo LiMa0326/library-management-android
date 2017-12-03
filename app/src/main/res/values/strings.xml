@@ -17,6 +17,6 @@
     <string name="action_logout">Logout</string>
     <string name="action_rentNewBook">Rent Book</string>
     <string name="back_customer_main">Rent List</string>>
-
+    <string name="return_book_button">Return Books</string>
     <string name="customer_main_rent_new_book">Rent New Book</string>
 </resources>

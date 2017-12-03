@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -39,6 +40,7 @@ public class CustomerMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_main);
+        setTitle("Customer Rent List");
 
         // Initialize Firebase Auth and Database Reference
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -62,8 +64,16 @@ public class CustomerMainActivity extends AppCompatActivity {
             final Button button = (Button) findViewById(R.id.rentNewButton);
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    //Go to new customer book list activity
+                    //Goto customer book list activity
                     loadCustomerBookList();
+                }
+            });
+
+            final Button button1 = (Button) findViewById(R.id.returnBookButton);
+            button1.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v){
+                    //Goto customer return book activity
+                    loadCustomerReturnBooks();
                 }
             });
 
@@ -78,15 +88,16 @@ public class CustomerMainActivity extends AppCompatActivity {
 
                     if(temp != null && temp.getEmail().equals(mLibrarianEmail)){
                         if(temp.getRentBooks() != null){
+                            adapter.clear();
                             for(String bookName: temp.getRentBooks().values()){
                                 adapter.add(bookName);
                             }
                         }
                     }else{
                         Customer newCustomer = new Customer(mLibrarianId, mLibrarianEmail);
-                        Map<String, String> newMap = new HashMap<>();
-                        newMap.put(String.valueOf(System.currentTimeMillis()),"恨别鸟惊心第一卷");
-                        newCustomer.setRentBooks(newMap);
+//                        Map<String, String> newMap = new HashMap<>();
+//                        newMap.put(String.valueOf(System.currentTimeMillis()),"恨别鸟惊心第一卷");
+//                        newCustomer.setRentBooks(newMap);
                         mDatabase.child("customer").push().setValue(newCustomer);
                         Log.e("CustomerMainActivity:" , "Add new customer: " + mLibrarianEmail);
                     }
@@ -109,8 +120,11 @@ public class CustomerMainActivity extends AppCompatActivity {
 
     private void loadCustomerBookList(){
         Intent intent = new Intent(CustomerMainActivity.this, CustomerBookList.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void loadCustomerReturnBooks(){
+        Intent intent = new Intent(CustomerMainActivity.this, CustomerReturnBookActivity.class);
         startActivity(intent);
     }
 

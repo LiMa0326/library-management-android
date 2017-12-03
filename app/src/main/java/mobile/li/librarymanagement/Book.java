@@ -1,5 +1,14 @@
 package mobile.li.librarymanagement;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
 /**
  * Created by Li on 2017/11/19.
  */
@@ -19,6 +28,9 @@ public class Book {
 
     private String bookCreatedBy;
     private String bookCreateByEmail;
+    private Map<String, String> waitList;
+
+    Book(){}
 
     Book(String input_bookName){
         bookName = input_bookName;
@@ -72,6 +84,23 @@ public class Book {
         bookCreateByEmail = Email;
     }
 
+    public void setWaitList(Map<String, String> input_waitlist){
+        if(waitList == null){
+            waitList = new HashMap<>();
+        }else if(input_waitlist == null){
+            return;
+        }
+        waitList.clear();
+        waitList.putAll(input_waitlist);
+    }
+
+    public void addToWaitList(String email){
+        if(waitList == null){
+            waitList = new HashMap<>();
+        }
+        waitList.put(String.valueOf(System.currentTimeMillis()), email);
+    }
+
     public String getBookName(){
         return bookName;
     }
@@ -102,6 +131,21 @@ public class Book {
         return bookCopies;
     }
 
+    public boolean removeFromWaitList(String inputEmail){
+        if(waitList == null || waitList.isEmpty() || inputEmail == null){
+            return false;
+        }else{
+            Map<String, String> newWaitList = new HashMap<>();
+            for(Map.Entry<String, String> entry : waitList.entrySet()){
+                if(!entry.getValue().equals(inputEmail)){
+                    newWaitList.put(entry.getKey(), entry.getValue());
+                }
+            }
+            setWaitList(newWaitList);
+            return true;
+        }
+    }
+
     public String getBookStatus(){
         return bookStatus;
     }
@@ -121,4 +165,29 @@ public class Book {
     public String getBookCreateByEmail(){
         return bookCreateByEmail;
     }
+
+    public Map<String, String> getWaitList(){
+        return waitList;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("bookName", bookName);
+        result.put("bookAuthor",bookAuthor);
+        result.put("bookTitle",bookTitle);
+        result.put("bookCallNumber",bookCallNumber);
+        result.put("bookPublisher",bookPublisher);
+        result.put("bookYear",bookYear);
+        result.put("bookLocation",bookLocation);
+        result.put("bookCopies",bookCopies);
+        result.put("bookStatus",bookStatus);
+        result.put("bookKeywords",bookKeywords);
+        result.put("bookImagePath",bookImagePath);
+        result.put("bookCreatedBy",bookCreatedBy);
+        result.put("bookCreateByEmail",bookCreateByEmail);
+        result.put("waitList",waitList);
+        return result;
+    }
+
 }

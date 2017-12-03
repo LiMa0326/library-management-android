@@ -33,6 +33,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/customer_main_rent_new_book"/>
+        <Button
+            android:id="@+id/returnBookButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/return_book_button"/>
 
     </LinearLayout>
 

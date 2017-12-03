@@ -28,7 +28,10 @@ public class Customer {
     }
 
     public int updateRentCountOneDay(){
-        if(rentBooks.size() == 0){
+        if(rentBooks == null){
+            rentBooks = new HashMap<>();
+            return 0;
+        }else if(rentBooks.size() == 0){
             return 0;
         }else{
             Date currentDateTime = new Date(System.currentTimeMillis());
@@ -44,16 +47,27 @@ public class Customer {
         }
     }
 
-    public Boolean rentNewBook(String newBook){
+    public int rentNewBook(String newBook){
         rentCountOneDay = updateRentCountOneDay();
         Log.e("Customer-OneDay:" , String.valueOf(rentCountOneDay));
         Log.e("Customer-ALL:" , String.valueOf(rentBooks.size()));
-        if(rentBooks.size() < 9 && rentCountOneDay < 3){
-            rentBooks.put(String.valueOf(System.currentTimeMillis()), newBook);
-            rentCountOneDay = updateRentCountOneDay();
-            return true;
+        if(rentBooks.size() < 9){
+            if(rentCountOneDay < 3){
+                if(!rentBooks.values().contains(newBook)){
+                    rentBooks.put(String.valueOf(System.currentTimeMillis()), newBook);
+                    rentCountOneDay = updateRentCountOneDay();
+                    return 1;
+                }else {
+                    // Rent Duplicate Error!
+                    return -3;
+                }
+            }else{
+                // Exceed one day rent count Error!
+                return -2;
+            }
         }else{
-            return false;
+            //Exceed total rent count Error!
+            return -1;
         }
     }
 

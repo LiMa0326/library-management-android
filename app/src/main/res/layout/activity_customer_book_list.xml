@@ -26,6 +26,12 @@
             android:layout_weight="1">
         </ListView>
 
+        <Button
+            android:id="@+id/backToCustomerMainButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/back_customer_main"/>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
