@@ -21,6 +21,12 @@
         tools:context=".CustomerMainActivity"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:text="@string/customer_main_title" />
+
         <ListView
             android:id="@+id/listView_rented"
             android:layout_width="match_parent"
@@ -32,11 +38,15 @@
             android:id="@+id/rentNewButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button"
+            android:padding="10dip"
             android:text="@string/customer_main_rent_new_book"/>
         <Button
             android:id="@+id/returnBookButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button"
+            android:padding="10dip"
             android:text="@string/return_book_button"/>
 
     </LinearLayout>

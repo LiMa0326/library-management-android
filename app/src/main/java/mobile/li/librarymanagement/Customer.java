@@ -101,6 +101,7 @@ public class Customer {
         if(rentBooks == null){
             rentBooks = new HashMap<>();
         }
+        rentBooks.clear();
         rentBooks.putAll(input_map);
     }
 

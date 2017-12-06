@@ -46,7 +46,7 @@ public class CustomerMainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        Log.i("CustomerMainActivity:" , "Set Firebase Successful");
+        Log.i("CustomerMainActivity:" , "Set FireBase Successful");
 
         if (mFirebaseUser == null){
             // Not logged in, launch the Log In activity
@@ -56,8 +56,8 @@ public class CustomerMainActivity extends AppCompatActivity {
             mLibrarianEmail = mFirebaseUser.getEmail();
 
             // Set up ListView
-            final ListView listViewRented = (ListView) findViewById(R.id.listView_rented);
             final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
+            final ListView listViewRented = (ListView) findViewById(R.id.listView_rented);
             listViewRented.setAdapter(adapter);
 
             // Set up Button
@@ -95,12 +95,36 @@ public class CustomerMainActivity extends AppCompatActivity {
                         }
                     }else{
                         Customer newCustomer = new Customer(mLibrarianId, mLibrarianEmail);
-//                        Map<String, String> newMap = new HashMap<>();
-//                        newMap.put(String.valueOf(System.currentTimeMillis()),"恨别鸟惊心第一卷");
-//                        newCustomer.setRentBooks(newMap);
                         mDatabase.child("customer").push().setValue(newCustomer);
                         Log.e("CustomerMainActivity:" , "Add new customer: " + mLibrarianEmail);
                     }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            mDatabase.child("customer").orderByChild("email").equalTo(mLibrarianEmail).addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    adapter.clear();
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
                 }
 
                 @Override
