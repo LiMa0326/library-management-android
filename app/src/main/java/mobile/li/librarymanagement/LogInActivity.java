@@ -5,22 +5,28 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LogInActivity extends AppCompatActivity {
+    private static final String TAG = "EmailPassword";
 
     protected EditText emailEditText;
     protected EditText passwordEditText;
     protected Button logInButton;
+    protected Button sendVerifyButton;
     protected TextView signUpTextView;
+
     private FirebaseAuth mFirebaseAuth;
 
     @Override
@@ -35,12 +41,46 @@ public class LogInActivity extends AppCompatActivity {
         emailEditText = (EditText) findViewById(R.id.emailField);
         passwordEditText = (EditText) findViewById(R.id.passwordField);
         logInButton = (Button) findViewById(R.id.loginButton);
+        sendVerifyButton = (Button) findViewById(R.id.sendVerfyButton);
+
+//        findViewById(R.id.sendVerfyButton).setOnClickListener((View.OnClickListener) this);
 
         signUpTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LogInActivity.this, SignUpActivity.class);
                 startActivity(intent);
+            }
+        });
+//
+        sendVerifyButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.sendVerfyButton).setEnabled(false);
+
+                final FirebaseUser user = mFirebaseAuth.getCurrentUser();
+
+                user.sendEmailVerification()
+                        .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // [START_EXCLUDE]
+                                // Re-enable button
+                                findViewById(R.id.sendVerfyButton).setEnabled(true);
+
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(LogInActivity.this,
+                                            "Verification email sent to " + user.getEmail(),
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(LogInActivity.this,
+                                            "Failed to send verification email.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                // [END_EXCLUDE]
+                            }
+                        });
             }
         });
 
@@ -84,4 +124,8 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 }
+

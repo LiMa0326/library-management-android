@@ -11,6 +11,7 @@
     <string name="login_button_label">Login</string>
     <string name="sign_up_text">Sign Up!</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="sendverify_button_label">Verify Email</string>
     <string name="add_book">Add New Book</string>
     <string name="search_book">Search Book</string>
     <string name="search_my_book">Search My Book</string>

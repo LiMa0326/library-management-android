@@ -40,6 +40,14 @@
         android:layout_below="@+id/passwordField"
         android:text="@string/login_button_label" />
 
+    <Button
+        android:id="@+id/sendVerfyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/passwordField"
+        android:layout_below="@+id/loginButton"
+        android:text="@string/sendverify_button_label" />
+
     <TextView
         android:id="@+id/signUpText"
         android:layout_width="wrap_content"
