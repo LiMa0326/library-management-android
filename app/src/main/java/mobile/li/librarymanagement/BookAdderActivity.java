@@ -56,7 +56,12 @@ public class BookAdderActivity extends AppCompatActivity {
                 if(name == " " || author == " " || title == " " || call_number == " " || publisher == " " || year == " " ||
                         location == " " || copies == " " || status == " " || keywords == " " || image_path == " "){
                     Toast.makeText(BookAdderActivity.this, "Please fill all the blank", Toast.LENGTH_LONG).show();
-                }else {
+                }else if(!isNumber(copies)){
+                    Toast.makeText(BookAdderActivity.this, "Please enter a valid number on the copies field", Toast.LENGTH_LONG).show();
+                }else if (!(status.equals("ONLINE") || status.equals("OFFLINE"))){
+                    Toast.makeText(BookAdderActivity.this, "Please enter online or offline on the status field", Toast.LENGTH_LONG).show();
+                }
+                else {
                     mDatabase.child("books")
                             .orderByChild("bookName")
                             .equalTo(name)
@@ -142,6 +147,11 @@ public class BookAdderActivity extends AppCompatActivity {
         if(image_path == null || image_path.trim().equals("")){
             image_path = " ";
         }
+    }
+
+    private boolean isNumber(String s){
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
+
     }
 
 }

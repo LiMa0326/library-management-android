@@ -81,7 +81,12 @@ public class BookEditorActivity extends AppCompatActivity {
                 if(name == " " || author == " " || title == " " || call_number == " " || publisher == " " || year == " " ||
                         location == " " || copies == " " || status == " " || keywords == " " || image_path == " "){
                     Toast.makeText(BookEditorActivity.this, "Please fill all the blank", Toast.LENGTH_LONG).show();
-                }else if(name.equals(getIntent().getStringExtra(KEY_NAME))){
+                }else if(!isNumber(copies)){
+                    Toast.makeText(BookEditorActivity.this, "Please enter a valid number on the copies field", Toast.LENGTH_LONG).show();
+                }else if(!(status.equals("ONLINE") || status.equals("OFFLINE"))){
+                    Toast.makeText(BookEditorActivity.this, "Please enter online or offline on the status field", Toast.LENGTH_LONG).show();
+                }
+                else if(name.equals(getIntent().getStringExtra(KEY_NAME))){
                     editBook();
 //                    Intent resultIntent = new Intent();
 //                    setResult(RESULT_OK, resultIntent);
@@ -270,6 +275,11 @@ public class BookEditorActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private boolean isNumber(String s){
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
+
     }
 }
 
