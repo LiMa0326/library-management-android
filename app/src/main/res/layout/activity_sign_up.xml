@@ -32,12 +32,22 @@
         android:inputType="textPassword"
         android:hint="@string/password_hint" />
 
-    <Button
-        android:id="@+id/signupButton"
+    <EditText
+        android:id="@+id/uIDField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/passwordField"
         android:layout_below="@+id/passwordField"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="University ID" />
+
+    <Button
+        android:id="@+id/signupButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/uIDField"
+        android:layout_below="@+id/uIDField"
         android:text="@string/sign_up_button_label" />
 
 </RelativeLayout>

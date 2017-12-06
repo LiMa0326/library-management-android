@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,6 +19,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     protected EditText passwordEditText;
     protected EditText emailEditText;
+    protected EditText uIDEditText;
     protected Button signUpButton;
     private FirebaseAuth mFirebaseAuth;
 
@@ -32,15 +34,19 @@ public class SignUpActivity extends AppCompatActivity {
         passwordEditText = (EditText)findViewById(R.id.passwordField);
         emailEditText = (EditText)findViewById(R.id.emailField);
         signUpButton = (Button)findViewById(R.id.signupButton);
+        uIDEditText = (EditText) findViewById(R.id.uIDField);
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String password = passwordEditText.getText().toString();
                 String email = emailEditText.getText().toString();
+                String id = uIDEditText.getText().toString();
 
                 password = password.trim();
                 email = email.trim();
+                id = id.trim();
+
 
                 if (password.isEmpty() || email.isEmpty()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
@@ -49,7 +55,10 @@ public class SignUpActivity extends AppCompatActivity {
                             .setPositiveButton(android.R.string.ok, null);
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                } else {
+                } else if(id.length() != 6 || (!isNumber(id))){
+                    Toast.makeText(SignUpActivity.this, "Please enter a valid University ID", Toast.LENGTH_LONG).show();
+                }
+                else {
                     mFirebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -72,6 +81,11 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean isNumber(String s){
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
+
     }
 
 }
