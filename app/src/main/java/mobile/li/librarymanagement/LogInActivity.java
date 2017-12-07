@@ -27,16 +27,13 @@ public class LogInActivity extends AppCompatActivity {
     protected Button sendVerifyButton;
     protected TextView signUpTextView;
 
-    private FirebaseAuth mFirebaseAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+        FirebaseAuth.getInstance().signOut();
 
         // Initialize FirebaseAuth
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
         signUpTextView = (TextView) findViewById(R.id.signUpText);
         emailEditText = (EditText) findViewById(R.id.emailField);
         passwordEditText = (EditText) findViewById(R.id.passwordField);
@@ -58,6 +55,7 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                findViewById(R.id.sendVerfyButton).setEnabled(false);
+                FirebaseAuth.getInstance().signOut();
                 String email = emailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
@@ -72,40 +70,23 @@ public class LogInActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
-                    mFirebaseAuth.signInWithEmailAndPassword(email, password);
 
-                    FirebaseUser user = mFirebaseAuth.getCurrentUser();
-
-                    if(user.isEmailVerified()){
-                        Toast.makeText(LogInActivity.this,
-                                "this user has been verified",
-                                Toast.LENGTH_SHORT).show();
-                        FirebaseAuth.getInstance().signOut();
-                    }else {
-                        user.sendEmailVerification()
-                                .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        // [START_EXCLUDE]
-                                        // Re-enable button
-//                                findViewById(R.id.sendVerfyButton).setEnabled(true);
-
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(LogInActivity.this,
-                                                    "Verification email sent ",
-                                                    Toast.LENGTH_SHORT).show();
-                                            FirebaseAuth.getInstance().signOut();
-                                        } else {
-                                            Toast.makeText(LogInActivity.this,
-                                                    "Failed to send verification email.",
-                                                    Toast.LENGTH_SHORT).show();
-                                            FirebaseAuth.getInstance().signOut();
-
-                                        }
-                                        // [END_EXCLUDE]
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        sendEmailVerified();
+                                    } else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(LogInActivity.this);
+                                        builder.setMessage(task.getException().getMessage())
+                                                .setTitle(R.string.login_error_title)
+                                                .setPositiveButton(android.R.string.ok, null);
+                                        AlertDialog dialog = builder.create();
+                                        dialog.show();
                                     }
-                                });
-                    }
+                                }
+                            });
                 }
             }
         });
@@ -127,7 +108,7 @@ public class LogInActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
-                    mFirebaseAuth.signInWithEmailAndPassword(email, password)
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -148,23 +129,19 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
-    private void checkIfEmailVerified()
-    {
+
+    private void checkIfEmailVerified() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user.isEmailVerified())
-        {
+        if (user.isEmailVerified()) {
             // user is verified, so you can finish this activity or send user to activity which you want.
             Intent intent = new Intent(LogInActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-        }
-        else
-        {
+        } else {
             // email is not verified, so just prompt the message to the user and restart this activity.
             // NOTE: don't forget to log out the user.
-            FirebaseAuth.getInstance().signOut();
             Toast.makeText(LogInActivity.this,
                     user.getEmail() + "hasn't been verified by user yet",
                     Toast.LENGTH_SHORT).show();
@@ -175,7 +152,42 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
+    private void sendEmailVerified() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified()) {
+            // user is verified, so you can finish this activity or send user to activity which you want.
+            Toast.makeText(LogInActivity.this,
+                    "this user has been verified",
+                    Toast.LENGTH_SHORT).show();
+
+        } else {
+            // email is not verified, so just prompt the message to the user and restart this activity.
+            // NOTE: don't forget to log out the user.
+            user.sendEmailVerification()
+                    .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(LogInActivity.this,
+                                        "Verification email sent ",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LogInActivity.this,
+                                        "Failed to send verification email.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            // [END_EXCLUDE]
+                        }
+                    });
+
+
+            //restart this activity
+
+        }
+    }
 
 
 }
+
 
