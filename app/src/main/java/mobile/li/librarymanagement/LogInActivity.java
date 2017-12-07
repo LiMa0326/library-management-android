@@ -57,30 +57,56 @@ public class LogInActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                findViewById(R.id.sendVerfyButton).setEnabled(false);
+//                findViewById(R.id.sendVerfyButton).setEnabled(false);
+                String email = emailEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
 
-                final FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                email = email.trim();
+                password = password.trim();
 
-                user.sendEmailVerification()
-                        .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                // [START_EXCLUDE]
-                                // Re-enable button
-                                findViewById(R.id.sendVerfyButton).setEnabled(true);
+                if (email.isEmpty() || password.isEmpty()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LogInActivity.this);
+                    builder.setMessage(R.string.login_error_message)
+                            .setTitle(R.string.login_error_title)
+                            .setPositiveButton(android.R.string.ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    mFirebaseAuth.signInWithEmailAndPassword(email, password);
 
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(LogInActivity.this,
-                                            "Verification email sent to " + user.getEmail(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(LogInActivity.this,
-                                            "Failed to send verification email.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                // [END_EXCLUDE]
-                            }
-                        });
+                    FirebaseUser user = mFirebaseAuth.getCurrentUser();
+
+                    if(user.isEmailVerified()){
+                        Toast.makeText(LogInActivity.this,
+                                "this user has been verified",
+                                Toast.LENGTH_SHORT).show();
+                        FirebaseAuth.getInstance().signOut();
+                    }else {
+                        user.sendEmailVerification()
+                                .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        // [START_EXCLUDE]
+                                        // Re-enable button
+//                                findViewById(R.id.sendVerfyButton).setEnabled(true);
+
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(LogInActivity.this,
+                                                    "Verification email sent ",
+                                                    Toast.LENGTH_SHORT).show();
+                                            FirebaseAuth.getInstance().signOut();
+                                        } else {
+                                            Toast.makeText(LogInActivity.this,
+                                                    "Failed to send verification email.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            FirebaseAuth.getInstance().signOut();
+
+                                        }
+                                        // [END_EXCLUDE]
+                                    }
+                                });
+                    }
+                }
             }
         });
 
@@ -106,10 +132,7 @@ public class LogInActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
+                                        checkIfEmailVerified();
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(LogInActivity.this);
                                         builder.setMessage(task.getException().getMessage())
@@ -123,6 +146,33 @@ public class LogInActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void checkIfEmailVerified()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified())
+        {
+            // user is verified, so you can finish this activity or send user to activity which you want.
+            Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            // email is not verified, so just prompt the message to the user and restart this activity.
+            // NOTE: don't forget to log out the user.
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(LogInActivity.this,
+                    user.getEmail() + "hasn't been verified by user yet",
+                    Toast.LENGTH_SHORT).show();
+
+
+            //restart this activity
+
+        }
     }
 
 
