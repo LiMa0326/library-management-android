@@ -18,14 +18,17 @@
     <string name="action_logout">Logout</string>
     <string name="action_rentNewBook">Rent Book</string>
     <string name="back_customer_main">Rent List</string>>
-    <string name="customer_main_title">Your Rented Books:</string>
+    <string name="customer_main_title">Books Are Being Rented By You:</string>
+    <string name="customer_rent_success">Rent Book Successful!</string>
+    <string name="customer_rent_failed">Rent Book Failed!</string>
     <string name="return_book_button">Return Books</string>
-    <string name="return_book_notification">Please select less than 3 books, we only accept 3 or less books return at one time.</string>
+    <string name="return_book_notification">Please select less than 9 books, we only accept 9 or less books return at one time.</string>
     <string name="return_book_check">Check Out</string>
     <string name="return_book_confirm_title">You are ready to return the books below, press confirm button to continue:</string>
     <string name="return_book_confirm">Confirm</string>
-    <string name="return_book_log">Return process from database, press button back to rent list: </string>
+    <string name="return_book_log">Return process from database: </string>
     <string name="return_confirm_back_customer_main">Back to rent list</string>
     <string name="customer_main_rent_new_book">Rent New Book</string>
+    <string name="customer_book_list_title">Click the book you want to rent:</string>
 
 </resources>

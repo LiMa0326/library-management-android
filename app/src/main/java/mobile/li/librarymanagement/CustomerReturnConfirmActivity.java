@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -99,8 +101,9 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
             final TransitionDrawable trans = new TransitionDrawable(color);
             final ProgressDialog progress = new ProgressDialog(this);
             progress.setTitle("Loading");
-            progress.setMessage("Wait while returning...");
+            progress.setMessage("Returning books...");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            final ImageView image = (ImageView)findViewById(R.id.renturn_sign);
 
             getPenaltyAndPrintout(confirmBooks, adapter, new OnGetDataListener() {
                 @Override
@@ -120,7 +123,7 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(boolean result) {
                                     //Success update Customer table
-                                    adapterLog.add("Successful update customer table");
+                                    //adapterLog.add("Successful update customer table");
                                     final int bookCount = confirmBooks.size();
                                     int bookNumber = 0;
                                     for(String book : confirmBooks){
@@ -129,13 +132,14 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(int bookNumber, String bookName) {
                                                 if(bookNumber != bookCount){
-                                                    adapterLog.add("Successful returned book: [" + bookName + "]");
+                                                    adapterLog.add("SUCCESSFULLY RETURNED BOOK: \n[" + bookName + "]");
                                                 }else{
-                                                    adapterLog.add("Successful returned book: [" + bookName + "]");
+                                                    adapterLog.add("SUCCESSFULLY RETURNED BOOK: \n[" + bookName + "]");
                                                     //Toast.makeText(getApplicationContext(), "Thank you. You successfully returned all books. Press button to return.", Toast.LENGTH_LONG).show();
                                                     buttonBack.setEnabled(true);
                                                     progress.dismiss();
-                                                    adapterLog.add("Thank you! You successfully returned all selected books.");
+                                                    //adapterLog.add("SUCCESSFULLY RETURNED SELECTED BOOKS!");
+                                                    image.setVisibility(View.VISIBLE);
                                                     buttonBack.setOnClickListener(new View.OnClickListener() {
                                                         @Override
                                                         public void onClick(View view) {

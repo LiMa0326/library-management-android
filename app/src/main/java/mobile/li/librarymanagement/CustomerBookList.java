@@ -1,18 +1,27 @@
 package mobile.li.librarymanagement;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +33,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +88,12 @@ public class CustomerBookList extends AppCompatActivity {
                 }
             });
 
+            // Set up other UI component
+            final ProgressDialog progress = new ProgressDialog(this);
+            progress.setTitle("Loading");
+            progress.setMessage("Renting Books...");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
             mDatabase.child("books").orderByChild("bookName").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded (DataSnapshot dataSnapshot, String s){
@@ -117,31 +136,34 @@ public class CustomerBookList extends AppCompatActivity {
                                     public void onSuccess(boolean result) {
                                         if(result){
                                             updateBothInSuccess(rentBookName);
-                                            Toast.makeText(getApplicationContext(), "Rent Book " +rentBookName+ " Successful!", Toast.LENGTH_LONG).show();
+                                            //Toast.makeText(getApplicationContext(), "Rent Book " +rentBookName+ " Successful!", Toast.LENGTH_LONG).show();
+                                            showPopupWindow(true, "[" +rentBookName+ "]\n" + "Due Date: " + getDueDate(new Date(System.currentTimeMillis())));
                                         }else{
                                             updateBookWaitlist(rentBookName);
-                                            Toast.makeText(getApplicationContext(), "Book rented by others! Add to WaitList!", Toast.LENGTH_LONG).show();
+                                            //Toast.makeText(getApplicationContext(), "Book rented by others! Add to WaitList!", Toast.LENGTH_LONG).show();
+                                            showPopupWindow(false, "Book rented by others! \n" + "Add to WaitList!");
                                         }
                                     }
                                 });
                             }else if(userResult == -1){
                                 Log.e("CustomerBookList:" , "Rent new Book Failed! Total Rent Limit exceed!");
-                                Toast.makeText(getApplicationContext(), "Total Rent Limit exceed!", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Total Rent Limit exceed!", Toast.LENGTH_LONG).show();
+                                showPopupWindow(false, "Your Total Rent Limit exceed!");
                             }else if(userResult == -2){
                                 Log.e("CustomerBookList:" , "Rent new Book Failed! One day Rent Limit exceed!");
-                                Toast.makeText(getApplicationContext(), "One day Rent Limit exceed!", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "One day Rent Limit exceed!", Toast.LENGTH_LONG).show();
+                                showPopupWindow(false, "Your One day Rent Limit exceed!");
                             }else if(userResult == -3){
                                 Log.e("CustomerBookList:" , "Rent new Book Failed! Cannot Rent duplicate books!");
-                                Toast.makeText(getApplicationContext(), "Sorry, you cannot rent duplicate for the same book!", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Sorry, you cannot rent duplicate for the same book!", Toast.LENGTH_LONG).show();
+                                showPopupWindow(false, "Sorry, you cannot rent duplicate for the same book!");
                             }else{
                                 Log.e("CustomerBookList:" , "Rent new Book Failed!");
-                                Toast.makeText(getApplicationContext(), "Rent Book Failed!", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Rent Book Failed!", Toast.LENGTH_LONG).show();
+                                showPopupWindow(false, "Rent Book Failed!");
                             }
                         }
                     });
-
-                    // finish CustomerBookList activity
-                    finish();
                 }
             });
         }
@@ -283,6 +305,59 @@ public class CustomerBookList extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void showPopupWindow(boolean result, String notification){
+        // get a reference to the already created main layout
+        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.customer_bookList_linerLayout);
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.customer_rent_popup_window, null);
+
+        ImageView popupImage = popupView.findViewById(R.id.ib_sign);
+        TextView popupTitle = popupView.findViewById(R.id.popup_title);
+        TextView popupText = popupView.findViewById(R.id.popup_text);
+
+        if(result){
+            popupTitle.setText(R.string.customer_rent_success);
+            popupImage.setImageResource(R.drawable.ic_check_circle_white_24px);
+        }else{
+            popupTitle.setText(R.string.customer_rent_failed);
+            popupImage.setImageResource(R.drawable.ic_info_white_24px);
+        }
+
+        popupText.setText(notification);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+
+                // finish CustomerBookList activity
+                // finish();
+
+                return true;
+            }
+        });
+    }
+
+    private String getDueDate(Date rentDateTime){
+        Calendar c = Calendar.getInstance();
+        c.setTime(rentDateTime);
+        c.add(Calendar.DATE, 30);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        return dateFormat.format(c.getTime());
     }
 
     private void loadLogInView() {

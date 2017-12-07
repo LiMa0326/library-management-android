@@ -63,7 +63,7 @@ public class CustomerReturnBookActivity extends AppCompatActivity implements Vie
                     // Capture total checked items
                     int checkedCount = listViewRented.getCheckedItemCount();
                     if(checkedCount > 3){
-                        setTitle("Please select less than 3 books");
+                        setTitle("Please select the books you want to return");
                     }else{
                         setTitle(checkedCount + " Books Ready to Return");
                     }
@@ -115,7 +115,7 @@ public class CustomerReturnBookActivity extends AppCompatActivity implements Vie
             }
         }
 
-        if(checkedCount > 0 && checkedCount <= 3){
+        if(checkedCount > 0 && checkedCount <= 9){
             String[] outputStrArr = new String[selectedItems.size()];
             for (int i = 0; i < selectedItems.size(); i++) {
                 outputStrArr[i] = selectedItems.get(i);
@@ -130,7 +130,7 @@ public class CustomerReturnBookActivity extends AppCompatActivity implements Vie
         }else if(checkedCount == 0){
             Toast.makeText(getApplicationContext(), "Please select books to return or press the back button.", Toast.LENGTH_LONG).show();
         }else{
-            Toast.makeText(getApplicationContext(), "Sorry, we only accept 3 or less books return at one time.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Sorry, we only accept 9 or less books return at one time.", Toast.LENGTH_LONG).show();
         }
     }
 
