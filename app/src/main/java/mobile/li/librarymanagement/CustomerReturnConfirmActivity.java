@@ -1,11 +1,15 @@
 package mobile.li.librarymanagement;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +41,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class CustomerReturnConfirmActivity extends AppCompatActivity {
 
@@ -137,6 +150,7 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
                                                     adapterLog.add("SUCCESSFULLY RETURNED BOOK: \n[" + bookName + "]");
                                                     //Toast.makeText(getApplicationContext(), "Thank you. You successfully returned all books. Press button to return.", Toast.LENGTH_LONG).show();
                                                     buttonBack.setEnabled(true);
+                                                    sendEmailForTransaction(confirmBooks);
                                                     progress.dismiss();
                                                     //adapterLog.add("SUCCESSFULLY RETURNED SELECTED BOOKS!");
                                                     image.setVisibility(View.VISIBLE);
@@ -295,6 +309,73 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void sendEmailForTransaction(List<String> confirmBooks){
+        StringBuilder body = new StringBuilder();
+        body.append("Thank you. You just completed one book return transaction. \n");
+        body.append("You returned following book(s): \n");
+        for(String bookName : confirmBooks){
+            body.append("\tBook Name: [");
+            body.append(bookName);
+            body.append("]\n");
+        }
+
+        if(isOnline()){
+            sendEmailToCustomer("You just completed one return book transaction", body.toString());
+        }
+    }
+
+    private void sendEmailToCustomer(String title, String body){
+        class SendConfirmationEmail extends AsyncTask<String, Void, Void> {
+            private Exception exception;
+            protected Void doInBackground(String... param) {
+                final String username = "li.for.app@gmail.com";
+                final String password = "67226554";
+
+                Properties props = new Properties();
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.port", "587");
+
+                Session session = Session.getInstance(props,
+                        new javax.mail.Authenticator() {
+                            protected PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication(username, password);
+                            }
+                        });
+                try {
+                    Message message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress("scontdiplex@gmail.com"));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mLibrarianEmail));
+                    message.setSubject(param[0]);
+                    message.setText(param[1]);
+
+                    Transport.send(message);
+
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
+
+                return null;
+            }
+
+            protected void onPostExecute() {
+
+            }
+        }
+
+        new SendConfirmationEmail().execute(title, body);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     private void loadCustomerMain() {

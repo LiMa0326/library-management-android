@@ -1,8 +1,11 @@
 package mobile.li.librarymanagement;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.TransitionDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,11 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,6 +40,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class CustomerBookList extends AppCompatActivity {
 
@@ -137,7 +154,14 @@ public class CustomerBookList extends AppCompatActivity {
                                         if(result){
                                             updateBothInSuccess(rentBookName);
                                             //Toast.makeText(getApplicationContext(), "Rent Book " +rentBookName+ " Successful!", Toast.LENGTH_LONG).show();
-                                            showPopupWindow(true, "[" +rentBookName+ "]\n" + "Due Date: " + getDueDate(new Date(System.currentTimeMillis())));
+                                            Date currentDateTime = new Date(System.currentTimeMillis());
+                                            showPopupWindow(true, "[" +rentBookName+ "]\n" + "Due Date: " + getDueDate(currentDateTime) + "\nEmail confirmation send.");
+                                            if(isOnline()){
+                                                sendEmailToCustomer("Rent Book " + "[" + rentBookName +"] Successfully",
+                                                        "Thank you. You successfully rented book. \n"
+                                                        + "\tBook Name: " + "[" +rentBookName+ "]\n"
+                                                        + "\tDue Date: " + getDueDate(currentDateTime));
+                                            }
                                         }else{
                                             updateBookWaitlist(rentBookName);
                                             //Toast.makeText(getApplicationContext(), "Book rented by others! Add to WaitList!", Toast.LENGTH_LONG).show();
@@ -350,6 +374,58 @@ public class CustomerBookList extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void sendEmailToCustomer(String title, String body){
+        class SendConfirmationEmail extends AsyncTask<String, Void, Void> {
+            private Exception exception;
+            protected Void doInBackground(String... param) {
+                final String username = "li.for.app@gmail.com";
+                final String password = "67226554";
+
+                Properties props = new Properties();
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.port", "587");
+
+                Session session = Session.getInstance(props,
+                        new javax.mail.Authenticator() {
+                            protected PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication(username, password);
+                            }
+                        });
+                try {
+                    Message message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress("scontdiplex@gmail.com"));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mLibrarianEmail));
+                    message.setSubject(param[0]);
+                    message.setText(param[1]);
+
+                    Transport.send(message);
+
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
+
+                return null;
+            }
+
+            protected void onPostExecute() {
+
+            }
+        }
+
+        new SendConfirmationEmail().execute(title, body);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     private String getDueDate(Date rentDateTime){
