@@ -62,7 +62,7 @@ public class BookEditorActivity extends AppCompatActivity {
                             year = (String)(firstChild.child("bookYear").getValue());
                             location = (String)(firstChild.child("bookLocation").getValue());
                             copies = Long.toString((Long)(firstChild.child("bookCopies").getValue()));
-                            status = (String)(firstChild.child("bookStatus").getValue());
+                            status = ((String)(firstChild.child("bookStatus").getValue())).toUpperCase();
                             keywords = (String)(firstChild.child("bookKeywords").getValue());
                             image_path = (String)(firstChild.child("bookImagePath").getValue());
                             setupUI();
@@ -84,8 +84,8 @@ public class BookEditorActivity extends AppCompatActivity {
                     Toast.makeText(BookEditorActivity.this, "Please fill all the blank", Toast.LENGTH_LONG).show();
                 }else if(!isNumber(copies)){
                     Toast.makeText(BookEditorActivity.this, "Please enter a valid number on the copies field", Toast.LENGTH_LONG).show();
-                }else if(!(status.equals("ONLINE") || status.equals("OFFLINE"))){
-                    Toast.makeText(BookEditorActivity.this, "Please enter online or offline on the status field", Toast.LENGTH_LONG).show();
+                }else if(status.equals("OFFLINE")){
+                    Toast.makeText(BookEditorActivity.this, "Cannot edit a rented book", Toast.LENGTH_LONG).show();
                 }
                 else if(name.equals(getIntent().getStringExtra(KEY_NAME))){
                     editBook();
@@ -131,30 +131,35 @@ public class BookEditorActivity extends AppCompatActivity {
         findViewById(R.id.book_editor_delButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabase.child("books")
-                        .orderByChild("bookName")
-                        .equalTo(getIntent().getStringExtra(KEY_NAME))
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.hasChildren()) {
-                                    DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
-                                    firstChild.getRef().removeValue();
+                if(status.equals("OFFLINE")){
+                    Toast.makeText(BookEditorActivity.this, "Cannot delete a rented book", Toast.LENGTH_LONG).show();
+                }else {
+
+                    mDatabase.child("books")
+                            .orderByChild("bookName")
+                            .equalTo(getIntent().getStringExtra(KEY_NAME))
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.hasChildren()) {
+                                        DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
+                                        firstChild.getRef().removeValue();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
 //                Intent resultIntent = new Intent();
 //                setResult(RESULT_OK, resultIntent);
 //                finish();
-                Intent intent = new Intent(BookEditorActivity.this, LibrarianMainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                    Intent intent = new Intent(BookEditorActivity.this, LibrarianMainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -208,8 +213,6 @@ public class BookEditorActivity extends AppCompatActivity {
         publisher = ((EditText) findViewById(R.id.book_editor_publisher)).getText().toString().toUpperCase();
         year = ((EditText) findViewById(R.id.book_editor_year)).getText().toString().toUpperCase();
         location = ((EditText) findViewById(R.id.book_editor_location)).getText().toString().toUpperCase();
-        copies = ((EditText) findViewById(R.id.book_editor_copies)).getText().toString().toUpperCase();
-        status = ((EditText) findViewById(R.id.book_editor_status)).getText().toString().toUpperCase();
         keywords = ((EditText) findViewById(R.id.book_editor_keyword)).getText().toString().toUpperCase();
         image_path = ((EditText) findViewById(R.id.book_editor_imagePath)).getText().toString().toUpperCase();
 
@@ -234,12 +237,12 @@ public class BookEditorActivity extends AppCompatActivity {
         if(location == null || location.trim().equals("")){
             location = " ";
         }
-        if(copies == null || copies.trim().equals("")){
-            copies = " ";
-        }
-        if(status == null || status.trim().equals("")){
-            status = " ";
-        }
+//        if(copies == null || copies.trim().equals("")){
+//            copies = " ";
+//        }
+//        if(status == null || status.trim().equals("")){
+//            status = " ";
+//        }
         if(keywords == null || keywords.trim().equals("")){
             keywords = " ";
         }
