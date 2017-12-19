@@ -77,6 +77,15 @@ public class CustomerMainActivity extends AppCompatActivity {
                 }
             });
 
+            final Button button2 = findViewById(R.id.waitListButton);
+            button2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Goto waitlist activity
+                    loadCustomerWaitlist();
+                }
+            });
+
             mDatabase.child("customer").orderByChild("email").equalTo(mLibrarianEmail).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -149,6 +158,11 @@ public class CustomerMainActivity extends AppCompatActivity {
 
     private void loadCustomerReturnBooks(){
         Intent intent = new Intent(CustomerMainActivity.this, CustomerReturnBookActivity.class);
+        startActivity(intent);
+    }
+
+    private void loadCustomerWaitlist(){
+        Intent intent = new Intent(CustomerMainActivity.this, CustomerWaitListActivity.class);
         startActivity(intent);
     }
 

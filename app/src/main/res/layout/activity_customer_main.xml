@@ -35,17 +35,24 @@
         </ListView>
 
         <Button
-            android:id="@+id/rentNewButton"
+            android:id="@+id/waitListButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button"
+            android:padding="10dip"
+            android:text="@string/wait_list_Button"/>
+        <Button
+            android:id="@+id/rentNewButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:padding="10dip"
             android:text="@string/customer_main_rent_new_book"/>
         <Button
             android:id="@+id/returnBookButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:padding="10dip"
             android:text="@string/return_book_button"/>
 

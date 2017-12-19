@@ -22,6 +22,7 @@
     <string name="customer_rent_success">Rent Book Successful!</string>
     <string name="customer_rent_failed">Rent Book Failed!</string>
     <string name="return_book_button">Return Books</string>
+    <string name="wait_list_Button">Check WaitList</string>
     <string name="return_book_notification">Please select less than 9 books, we only accept 9 or less books return at one time.</string>
     <string name="return_book_check">Check Out</string>
     <string name="return_book_confirm_title">You are ready to return the books below, press confirm button to continue:</string>
@@ -29,6 +30,7 @@
     <string name="return_book_log">Return process from database: </string>
     <string name="return_confirm_back_customer_main">Back to rent list</string>
     <string name="customer_main_rent_new_book">Rent New Book</string>
+    <string name="customer_wait_list_title">Your current waitlist of rent book is shown below, click the book name to delete from waitlist:</string>
     <string name="customer_book_list_title">Click the book you want to rent:</string>
 
 </resources>

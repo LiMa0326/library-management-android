@@ -30,7 +30,8 @@
         <activity android:name=".BookEditorActivity" />
         <activity android:name=".LibrarianSearchList" />
         <activity android:name=".CustomerReturnBookActivity" />
-        <activity android:name=".CustomerReturnConfirmActivity"></activity>
+        <activity android:name=".CustomerReturnConfirmActivity" />
+        <activity android:name=".CustomerWaitListActivity"></activity>
     </application>
 
 </manifest>
