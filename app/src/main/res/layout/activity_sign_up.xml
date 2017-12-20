@@ -9,12 +9,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SignUpActivity" >
 
-    <EditText
-        android:id="@+id/emailField"
+    <TextView
+        android:id="@+id/sign_up_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:paddingBottom="8dp"
+        android:text="@string/sign_up_main_title" />
+
+    <EditText
+        android:id="@+id/emailField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/sign_up_title"
+        android:layout_below="@+id/sign_up_title"
         android:ems="10"
         android:inputType="textEmailAddress"
         android:hint="@string/email_hint" >

@@ -25,7 +25,8 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".CustomerMainActivity" />
         <activity android:name=".LibrarianMainActivity" />
-        <activity android:name=".CustomerBookList" />
+        <activity android:name=".CustomerBookList"
+            android:windowSoftInputMode="stateHidden"  />
         <activity android:name=".BookAdderActivity" />
         <activity android:name=".BookEditorActivity" />
         <activity android:name=".LibrarianSearchList" />

@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -77,7 +81,7 @@ public class CustomerBookList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_book_list);
-        setTitle("Select the book you want to rent");
+        setTitle("Check Out New Book");
 
         // Initialize FireBase Auth and Database Reference
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -111,6 +115,11 @@ public class CustomerBookList extends AppCompatActivity {
             progress.setMessage("Renting Books...");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
 
+            // Set up search field
+            final EditText editSearch = (EditText) findViewById(R.id.searchText);
+            editSearch.setSingleLine(true);
+            editSearch.clearFocus();
+
             mDatabase.child("books").orderByChild("bookName").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded (DataSnapshot dataSnapshot, String s){
@@ -135,6 +144,25 @@ public class CustomerBookList extends AppCompatActivity {
 
                 @Override
                 public void onCancelled (DatabaseError databaseError){
+
+                }
+            });
+
+            // Capture Text in EditText
+            editSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                    // When user changed the Text
+                    adapter.getFilter().filter(cs);
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable arg0) {
 
                 }
             });

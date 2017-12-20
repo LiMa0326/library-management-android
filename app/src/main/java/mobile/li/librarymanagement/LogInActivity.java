@@ -70,7 +70,6 @@ public class LogInActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
-
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override

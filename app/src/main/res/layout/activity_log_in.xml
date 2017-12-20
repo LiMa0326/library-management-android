@@ -9,12 +9,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".LogInActivity" >
 
-    <EditText
-        android:id="@+id/emailField"
+    <TextView
+        android:id="@+id/login_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:paddingBottom="8dp"
+        android:text="@string/login_main_title" />
+
+    <EditText
+        android:id="@+id/emailField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/login_title"
+        android:layout_below="@+id/login_title"
         android:ems="10"
         android:inputType="textEmailAddress"
         android:hint="@string/email_hint" >
@@ -52,9 +61,9 @@
         android:id="@+id/signUpText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/loginButton"
+        android:layout_below="@+id/sendVerfyButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="69dp"
+        android:layout_marginTop="24dp"
         android:text="@string/sign_up_text" />
 
 </RelativeLayout>

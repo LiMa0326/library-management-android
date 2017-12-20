@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">LibraryManagement</string>
+    <string name="login_main_title">Login with Email and Password. Press Sign Up below if you are new here. If you did not receive verification email in 10 minutes after sign up, input email and password and press Resend Verify Email:</string>
+    <string name="sign_up_main_title">Input email, password and university ID to sign up, university ID must have 6 digits. You will automatically receive a verification email later:</string>
     <string name="password_hint">Password</string>
     <string name="email_hint">Email</string>
     <string name="sign_up_button_label">Sign Up</string>
@@ -11,7 +13,7 @@
     <string name="login_button_label">Login</string>
     <string name="sign_up_text">Sign Up!</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="sendverify_button_label">Verify Email</string>
+    <string name="sendverify_button_label">Resend Verify Email</string>
     <string name="add_book">Add New Book</string>
     <string name="search_book">Search Book</string>
     <string name="search_my_book">Search My Book</string>
@@ -31,6 +33,8 @@
     <string name="return_confirm_back_customer_main">Back to rent list</string>
     <string name="customer_main_rent_new_book">Rent New Book</string>
     <string name="customer_wait_list_title">Your current waitlist of rent book is shown below, click the book name to delete from waitlist:</string>
-    <string name="customer_book_list_title">Click the book you want to rent:</string>
+    <string name="customer_book_list_title">Book Search:</string>
+    <string name="customer_book_list_title_2nd">Click the book you want to check out:</string>
+
 
 </resources>

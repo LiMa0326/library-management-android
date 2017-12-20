@@ -18,8 +18,24 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
+        android:paddingBottom="4dp"
         android:text="@string/customer_book_list_title" />
+
+    <EditText
+        android:id="@+id/searchText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="8dp">
+
+        <!--<requestFocus />-->
+    </EditText>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:text="@string/customer_book_list_title_2nd" />
 
     <ListView
         android:id="@+id/listView"
