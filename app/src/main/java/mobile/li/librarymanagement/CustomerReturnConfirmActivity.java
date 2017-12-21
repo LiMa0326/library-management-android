@@ -258,6 +258,21 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
                     temp.setBookStatus("online");
                 }
 
+                Map<String, String> waitlist = temp.getWaitList();
+                if(waitlist != null){
+                    Long min = Long.MAX_VALUE;
+                    for(String valueStr : waitlist.keySet()){
+                        long value = Long.valueOf(valueStr);
+                        if(value < min){
+                            min = value;
+                        }
+                    }
+                    if(min != Long.MAX_VALUE){
+                        String notifyEmail = waitlist.get(String.valueOf(min));
+                        sendEmailForNextCustomer(bookName, notifyEmail);
+                    }
+                }
+
                 //Update database with Map and updateChildren function
                 Map<String, Object> updateValues = temp.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
@@ -322,11 +337,24 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
         }
 
         if(isOnline()){
-            sendEmailToCustomer("You just completed one return book transaction", body.toString());
+            sendEmailToCustomer("You just completed one return book transaction", body.toString(), mLibrarianEmail);
         }
     }
 
-    private void sendEmailToCustomer(String title, String body){
+    private void sendEmailForNextCustomer(String bookName, String sendEmail){
+        StringBuilder body = new StringBuilder();
+        body.append("You can rent the book on your waitlist now. \n");
+        body.append("Following book is available now: \n");
+        body.append("\tBook Name: [");
+        body.append(bookName);
+        body.append("]\n");
+
+        if(isOnline()){
+            sendEmailToCustomer("Rent your book now, you are the next one on waitlist!", body.toString(), sendEmail);
+        }
+    }
+
+    private void sendEmailToCustomer(String title, String body, final String receiveEmail){
         class SendConfirmationEmail extends AsyncTask<String, Void, Void> {
             private Exception exception;
             protected Void doInBackground(String... param) {
@@ -348,7 +376,7 @@ public class CustomerReturnConfirmActivity extends AppCompatActivity {
                 try {
                     Message message = new MimeMessage(session);
                     message.setFrom(new InternetAddress("scontdiplex@gmail.com"));
-                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mLibrarianEmail));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiveEmail));
                     message.setSubject(param[0]);
                     message.setText(param[1]);
 
